@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# chkconfig: - 99 00
+# description: jmeter server.
+
+### BEGIN INIT INFO
+# Provides: jmeter-server
+# Required-Start: $network $local_fs
+# Required-Stop: $network $local_fs
+# Should-Start:
+# Should-Stop:
+# Short-Description: start and stop jmeter-server
+# Description: jmeter server.
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+prog=jmeter-server
+lockfile=/var/lock/subsys/$prog
+export SERVER_PORT=<%= node['jmeter']['server']['port'] %>
+
+start() {
+    [ "$EUID" != "0" ] && exit 4
+    [ "$NETWORKING" = "no" ] && exit 1
+
+    # Start daemon.
+    echo -n $"Starting $prog: "
+    nohup <%= node['jmeter']['root'] %>/apache-jmeter/bin/$prog &
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    [ "$EUID" != "0" ] && exit 4
+        echo -n $"Shutting down $prog: "
+    pkill -f $prog
+    RETVAL=$?
+        echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status $prog
+    ;;
+  restart|force-reload)
+    stop
+    start
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart}"
+    exit 2
+esac

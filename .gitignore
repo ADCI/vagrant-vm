@@ -1,0 +1,7 @@
+.vagrant/*
+.vagrant
+.DS_Store
+project/backup/*.sql
+project/backup/*.sql.gz
+.idea
+.idea/*

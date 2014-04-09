@@ -1,0 +1,1 @@
+default['phpapp']['hosts'] = ["dev"];
