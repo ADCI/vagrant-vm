@@ -1,26 +1,6 @@
 name "webserver"
 description "Default settings for web server."
 
-run_list(
-  "recipe[apt]",
-  "recipe[git]",
-  "recipe[phpapp]",
-  "recipe[drush]",
-  "recipe[phing]",
-  "recipe[codesniffer]",
-  "recipe[phpmd]",
-  "recipe[phpcpd]",
-  # Use following recipes when you really need it.
-  #"recipe[redis::source]",
-  #"recipe[jenkins::java]",
-  #"recipe[jenkins::master]",
-  #"recipe[firefox]",
-  #"recipe[xvfb]",
-  #"recipe[jenkins_plugins]",
-  # Jmeter requires Jave VM to run which can be installed by uncommenting "recipe[jenkins::java]" above.
-  #"recipe[jmeter]",
-)
-
 default_attributes(
   "project" => {
     "sites" => {

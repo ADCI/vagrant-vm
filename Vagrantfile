@@ -21,6 +21,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   
   config.vm.provision "chef_solo" do |chef|
+    chef.add_recipe "apt"
+    chef.add_recipe "git"
+    chef.add_recipe "phpapp"
+    chef.add_recipe "drush"
+    chef.add_recipe "phing"
+    chef.add_recipe "codesniffer"
+    chef.add_recipe "phpmd"
+    chef.add_recipe "phpcpd"
+    # Use following recipes when you really need it.
+    #chef.add_recipe "redis::source"
+    #chef.add_recipe "jenkins::java"
+    #chef.add_recipe "jenkins::master"
+    #chef.add_recipe "firefox"
+    #chef.add_recipe "xvfb"
+    #chef.add_recipe "jenkins_plugins"
+    # Jmeter requires Jave VM to run which can be installed by uncommenting [chef.add_recipe "jenkins::java"] above.
+    #chef.add_recipe "jmeter"
+
+    # Settings in external file roles/webserver.rb
     chef.roles_path = "roles"
     chef.add_role("webserver")
   end
