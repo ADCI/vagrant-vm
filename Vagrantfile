@@ -12,6 +12,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Improve network perfomance
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    #vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    #vb.customize ["modifyvm", :id, "--cpuexecutioncap", "100"]
   end
 
   # Update Chef and Ruby

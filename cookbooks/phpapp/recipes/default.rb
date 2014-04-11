@@ -7,6 +7,8 @@
 # All rights reserved - Do Not Redistribute
 #
 
+require 'fileutils'
+
 include_recipe "nginx"
 include_recipe "php"
 include_recipe "php::module_mysql"
@@ -19,12 +21,16 @@ include_recipe "mysql::server"
 include_recipe "http_request"
 include_recipe "http_request::default"
 
+# Create directory /var/www.
+Dir.mkdir("/var/www") unless File.exists?("/var/www")
+FileUtils.chown("vagrant", "vagrant", "/var/www")
+
 # Delete old config files.
 Dir.glob("/etc/nginx/sites-enabled/*.conf").each { |file| File.delete(file) }
 Dir.glob("/etc/nginx/sites-available/*.conf").each { |file| File.delete(file) }
 
-if node.has_key?('project') && node['project'].has_key?('sites')
-  node['project']['sites'].each do |site|
+if node.has_key?("project") && node["project"].has_key?("sites")
+  node["project"]["sites"].each do |site|
     site_name = site[0]
     site_port = site[1]
     template "/etc/nginx/sites-available/#{site_name}.conf" do
