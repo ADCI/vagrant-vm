@@ -2,13 +2,6 @@ name "webserver"
 description "Default settings for web server."
 
 default_attributes(
-  "project" => {
-    "sites" => {
-      "site" => 4567,
-#      "another_site" => 4568,
-    }
-  },
-
   "redis" => {
     "source" => {
       "version" => "2.6.7",
