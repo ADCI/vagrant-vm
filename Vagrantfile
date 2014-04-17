@@ -5,6 +5,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
   config.vm.network :forwarded_port, host: 4567, guest: 4567
   config.vm.network :forwarded_port, host: 8080, guest: 8080
+
+  
   #config.vm.network "public_network", ip: "10.1.0.125"
 
   config.vm.provider "virtualbox" do |vb|
@@ -20,6 +22,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => 'apt-get update'
   config.vm.provision :shell, :inline => 'apt-get install build-essential ruby1.9.1-full --no-upgrade --yes'
   config.vm.provision :shell, :inline => "gem install chef --version 11.10.4 --no-rdoc --no-ri --conservative"
+  
+  # Install/update Alpine
+  # config.vm.provision :shell, :inline => 'apt-get install alpine --no-upgrade --yes'
 
   
   config.vm.provision "chef_solo" do |chef|
@@ -32,6 +37,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "phpmd"
     chef.add_recipe "phpcpd"
     # Use following recipes when you really need it.
+	#chef.add_recipe "postfix"
+	#chef.add_recipe "dovecot::default"
     #chef.add_recipe "redis::source"
     #chef.add_recipe "jenkins::java"
     #chef.add_recipe "jenkins::master"
