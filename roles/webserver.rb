@@ -83,12 +83,12 @@ default_attributes(
   },
   
   # Uncomment this lines if you want to test sending emails from a local server, prepared from the "postfix" recipe.
-=begin
+
   "php" => {
     "directives" => {
 	  "SMTP" => "localhost.localdomain",
 	  "sendmail_from" => "vagrant@localhost.localdomain",
 	}
   }
-=end
+
 )

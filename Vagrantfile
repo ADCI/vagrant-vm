@@ -37,8 +37,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "phpmd"
     chef.add_recipe "phpcpd"
     # Use following recipes when you really need it.
-	#chef.add_recipe "postfix"
-	#chef.add_recipe "dovecot::default"
+	  #chef.add_recipe "postfix"
+	  #chef.add_recipe "dovecot::default"
+	  #chef.add_recipe "php_imap"
     #chef.add_recipe "redis::source"
     #chef.add_recipe "jenkins::java"
     #chef.add_recipe "jenkins::master"

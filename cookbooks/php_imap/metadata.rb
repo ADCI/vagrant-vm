@@ -1,0 +1,5 @@
+maintainer       "ADCI"
+maintainer_email "admin@adcisolutions.com"
+license          ""
+description      "Installs PHP IMAP extension"
+version          "0.0.1"
