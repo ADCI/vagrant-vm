@@ -50,6 +50,14 @@ default_attributes(
 
       "query_cache_limit" => "4M",
       "query_cache_size" => "64M",
+
+      # global memory = key_buffer_size + query_cache_size + innodb_buffer_pool_size + innodb_additional_mem_pool_size + innodb_log_buffer_size
+      # per thread memory = read_buffer_size + read_rnd_buffer_size + sort_buffer_size + join_buffer_size + binlog_cache_size + thread_stack + tmp_table_size + net_buffer_length * 2
+      # Actually net_buffer_length * 2 should be max_allowed_packet * 2. Also some flags affect these variables. For example if innodb_use_sys_malloc set to ON then
+      # innodb_additional_mem_pool_size won't be used.
+      # total memory size min = global memory + per thread buffer size
+      # total memory size max = global memory + per thread buffer size * max_connections
+      "max_connections" => "20",
     }
   },
   
