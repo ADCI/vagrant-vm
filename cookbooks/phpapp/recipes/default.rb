@@ -29,6 +29,11 @@ FileUtils.chown("vagrant", "vagrant", "/var/www")
 Dir.glob("/etc/nginx/sites-enabled/*.conf").each { |file| File.delete(file) }
 Dir.glob("/etc/nginx/sites-available/*.conf").each { |file| File.delete(file) }
 
+cookbook_file "php.ini" do
+  path "/etc/php5/fpm/php.ini"
+end
+
+# nginx.conf templates
 if node.has_key?("project") && node["project"].has_key?("sites")
   node["project"]["sites"].each do |site|
     site_name = site[0]
