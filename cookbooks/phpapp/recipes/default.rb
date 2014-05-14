@@ -29,17 +29,31 @@ FileUtils.chown("vagrant", "vagrant", "/var/www")
 Dir.glob("/etc/nginx/sites-enabled/*.conf").each { |file| File.delete(file) }
 Dir.glob("/etc/nginx/sites-available/*.conf").each { |file| File.delete(file) }
 
-cookbook_file "php.ini" do
-  path "/etc/php5/fpm/php.ini"
+template "php.ini" do
+  path "#{node['php-fpm']['conf_dir']}/php.ini"
+  source "php.ini.erb"
+  owner "root"
+  group "root"
+  mode 0644
+  variables(:directives => node['php']['directives'])
 end
 
-# nginx.conf templates
+template "nginx.conf" do
+  path "#{node['nginx']['dir']}/nginx.conf"
+  source "nginx.conf.erb"
+  owner "root"
+  group "root"
+  mode 0644
+  notifies :reload, 'service[nginx]'
+end
+
+# nginx.site.conf templates
 if node.has_key?("project") && node["project"].has_key?("sites")
   node["project"]["sites"].each do |site|
     site_name = site[0]
     site_port = site[1]
     template "/etc/nginx/sites-available/#{site_name}.conf" do
-      source "nginx.conf.erb"
+      source "nginx.site.conf.erb"
       mode "0640"
       owner "root"
       group "root"

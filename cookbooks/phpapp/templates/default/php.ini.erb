@@ -528,7 +528,7 @@ error_reporting = E_ALL & ~E_DEPRECATED
 ; Development Value: On
 ; Production Value: Off
 ; http://php.net/display-errors
-display_errors = Off
+display_errors = On
 
 ; The display of errors which occur during PHP's startup sequence are handled
 ; separately from display_errors. PHP's default behavior is to suppress those
@@ -725,7 +725,7 @@ auto_globals_jit = On
 
 ; Maximum size of POST data that PHP will accept.
 ; http://php.net/post-max-size
-post_max_size = 8M
+post_max_size = <%= node['phpapp']['max_file_size'] %>
 
 ; Magic quotes are a preprocessing feature of PHP where PHP will attempt to
 ; escape any character sequences in GET, POST, COOKIE and ENV data which might
@@ -876,7 +876,7 @@ file_uploads = On
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
-upload_max_filesize = 2M
+upload_max_filesize = <%= node['phpapp']['max_file_size'] %>
 
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = 20
