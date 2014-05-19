@@ -36,6 +36,7 @@ template "php.ini" do
   group "root"
   mode 0644
   variables(:directives => node['php']['directives'])
+  notifies :reload, 'service[php5-fpm]'
 end
 
 template "nginx.conf" do
