@@ -9,6 +9,17 @@ default_attributes(
     }
   },
 
+  "phpapp" => {
+    "upload_max_filesize" => "50M",
+    "php" => {
+      "post_max_size" => "50M",
+      "memory_limit" => "512M",
+      "max_execution_time" => "60",
+      "display_errors" => "On",
+      "html_errors" => "On",
+    },
+  },
+
   "mysql" => {
     "server_root_password" => "root",
     "server_debian_password" => "root",

@@ -21,7 +21,7 @@ events {
 }
 
 http {
-  client_max_body_size <%= node['phpapp']['max_file_size'] %>;
+  client_max_body_size <%= node['phpapp']['upload_max_filesize'] %>;
 
   <% if node.recipe?('nginx::naxsi_module') %>
   include       <%= node['nginx']['dir'] %>/naxsi_core.rules;
