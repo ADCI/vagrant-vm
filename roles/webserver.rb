@@ -10,13 +10,14 @@ default_attributes(
   },
 
   "phpapp" => {
-    "upload_max_filesize" => "50M",
+    "upload_max_filesize" => "16M",
     "php" => {
-      "post_max_size" => "50M",
-      "memory_limit" => "512M",
-      "max_execution_time" => "60",
+      "post_max_size" => "16M",
+      "memory_limit" => "256M",
+      "max_execution_time" => "30",
       "display_errors" => "On",
-      "html_errors" => "On",
+      "html_errors" => "Off",
+      "display_startup_errors" => "Off",
     },
   },
 
