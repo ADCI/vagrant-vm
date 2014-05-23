@@ -77,38 +77,36 @@ default_attributes(
   "postfix" => {
     #"mail_type" => "master",
     "main" => {
-	  #"inet-interfaces" => "all",
-	  "myhostname" => "localhost",
-	  "mydomain" => "localdomain",
-	  "mydestination" => "localhost.localdomain",
-	},
+      #"inet-interfaces" => "all",
+      "myhostname" => "localhost",
+      "mydomain" => "localdomain",
+      "mydestination" => "localhost.localdomain",
+    },
   },
   
   "dovecot" => {
     "conf" => {
-	  "mail_location" => "mbox:~/mail:INBOX=/var/mail/%u",
-	  "mail_access_groups" => "mail",
-	},
-	"protocols" => {
-	  "imap" => {},
-	  "pop3" => {},
-	},
-	"auth" => {
-	  "system" => {
-	    "passdb" => {
-		  "driver" => "pam",
-		}
-	  }
-	}
+      "mail_location" => "mbox:~/mail:INBOX=/var/mail/%u",
+      "mail_access_groups" => "mail",
+    },
+    "protocols" => {
+      "imap" => {},
+      "pop3" => {},
+    },
+    "auth" => {
+      "system" => {
+        "passdb" => {
+          "driver" => "pam",
+        }
+      }
+    }
   },
   
   # Uncomment this lines if you want to test sending emails from a local server, prepared from the "postfix" recipe.
-
   "php" => {
     "directives" => {
-	  "SMTP" => "localhost.localdomain",
-	  "sendmail_from" => "vagrant@localhost.localdomain",
-	}
+      "SMTP" => "localhost.localdomain",
+      "sendmail_from" => "vagrant@localhost.localdomain",
+    }
   }
-
 )

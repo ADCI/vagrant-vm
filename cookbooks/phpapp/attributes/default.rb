@@ -6,3 +6,4 @@ default['phpapp']['php']['max_execution_time'] = "30";
 default['phpapp']['php']['display_errors'] = "On";
 default['phpapp']['php']['html_errors'] = "Off";
 default['phpapp']['php']['display_startup_errors'] = "Off";
+default['nginx']['sendfile'] = "off";
