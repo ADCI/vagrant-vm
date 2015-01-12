@@ -1,11 +1,11 @@
 server {
-       server_name www.<%= @server_name %>;
-       rewrite ^(.*) http://<%= @server_name %>$1 permanent;
+       server_name www.<%= @server_domain %>;
+       rewrite ^(.*) http://<%= @server_domain %>$1 permanent;
 }
 
 server {
   listen   <%= @server_port %>;
-  server_name <%= @server_name %>;
+  server_name <%= @server_domain %>;
 
   access_log  <%= @logdir %>/<%= @server_name %>.access.log;
 

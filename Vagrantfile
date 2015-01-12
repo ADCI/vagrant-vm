@@ -4,7 +4,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "Ubuntu precise"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
   config.vm.network :forwarded_port, host: 4567, guest: 4567
-  config.vm.network :forwarded_port, host: 8080, guest: 8080
+  #config.vm.network :forwarded_port, host: 8080, guest: 8080
 
   
   #config.vm.network "public_network", ip: "10.1.0.125"
@@ -51,12 +51,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_recipe "imagemagick"
 
     # Configure available sites. For each site directory should be created in /var/www.
+
     chef.json = {
-      #"site_conf_type" => "port",
       "project" => {
         "sites" => {
-          "site" => 4567,
-#          "another-site" => 4568,
+          "site" => {
+            "port" => 4567,
+          },
+          "another_site" => {
+            "domain" => "site.com",
+          },
+          "empty_site" => {
+
+          },
         }
       }
     }
