@@ -51,7 +51,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_recipe "imagemagick"
 
     # Configure available sites. For each site directory should be created in /var/www.
-    chef.json = { 
+    chef.json = {
+      #"site_conf_type" => "port",
       "project" => {
         "sites" => {
           "site" => 4567,

@@ -48,19 +48,30 @@ template "nginx.conf" do
   notifies :reload, 'service[nginx]'
 end
 
+site_conf_type = "port"
+
+if node.has_key?("site_conf_type")
+  case node['site_conf_type']
+    when 'port', 'domain', 'podo'
+      site_conf_type = node['site_conf_type']
+  end
+end       
+        
+
 # nginx.site.conf templates
 if node.has_key?("project") && node["project"].has_key?("sites")
   node["project"]["sites"].each do |site|
     site_name = site[0]
     site_port = site[1]
     template "/etc/nginx/sites-available/#{site_name}.conf" do
-      source "nginx.site.conf.erb"
+      source "nginx.site.conf_#{site_conf_type}.erb"
       mode "0640"
       owner "root"
       group "root"
       variables(
                 :server_name => site_name,
                 :server_port => site_port,
+                :site_conf_type => node["site_conf_type"],
                 :server_aliases => ["*.#{site_name}"],
                 :docroot => "#{node[:doc_root]}/var/www/#{site_name}/project",
                 :logdir => "#{node[:nginx][:log_dir]}"

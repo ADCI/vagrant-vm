@@ -4,7 +4,6 @@ server {
 }
 
 server {
-  listen   <%= @server_port %>;
   server_name <%= @server_name %>;
 
   access_log  <%= @logdir %>/<%= @server_name %>.access.log;
