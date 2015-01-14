@@ -1,7 +1,8 @@
-maintainer       "YOUR_COMPANY_NAME"
-maintainer_email "YOUR_EMAIL"
+name             "phpapp"
+maintainer       "Leonid Mamaev (adci)"
+maintainer_email "leonid.mamaev@gmail.com"
 license          "All rights reserved"
-description      "Installs/Configures phpapp"
+description      "Installs/Configures nginx, mysql, php-fpm"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
 
@@ -11,5 +12,5 @@ depends "php-fpm"
 depends "openssl"
 depends "ohai"
 depends "build-essential"
-depends "mysql"
+depends "percona"
 depends "http_request"
