@@ -57,6 +57,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         "sites" => {
           "site" => {
             "port" => 4567,
+            "dir" => "/var/www/site"
           },
           "another_site" => {
             "domain" => "site.com",

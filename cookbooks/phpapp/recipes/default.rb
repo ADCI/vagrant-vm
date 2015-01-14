@@ -56,12 +56,15 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     site_port = ''
     site_conf_type = ''
     site_domain = ''
+    docroot = "#{node[:doc_root]}/var/www/#{site_name}/project"
     site_config.each do |config|
       case config[0]
         when 'port'
           site_port = config[1]
         when 'domain'
           site_domain = config[1]
+        when 'dir'
+          docroot = "#{node[:doc_root]}#{config[1]}/project"   
       end
       if site_port == '' && site_domain == ''
         site_conf_type = ''
@@ -89,7 +92,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :server_port => site_port,
                 :server_domain => site_domain,
                 :server_aliases => ["*.#{site_name}"],
-                :docroot => "#{node[:doc_root]}/var/www/#{site_name}/project",
+                :docroot => docroot,
                 :logdir => "#{node[:nginx][:log_dir]}"
                 )
     end
