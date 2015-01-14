@@ -10,17 +10,25 @@ default_attributes(
   },
 
   "phpapp" => {
-    "upload_max_filesize" => "16M",
+    "upload_max_filesize" => "32M",
     "php" => {
       "post_max_size" => "16M",
       "memory_limit" => "256M",
       "max_execution_time" => "30",
       "display_errors" => "On",
-      "html_errors" => "Off",
-      "display_startup_errors" => "Off",
+      "html_errors" => "On",
+      "display_startup_errors" => "On",
     },
   },
-
+  "percona" => {
+    "server" => {
+      "username" => "root",
+      "root_password" => "root",
+      "debian_password" => "root",
+      "debian_username" => "root",
+    },
+    "apt_keyserver" => "keyserver.ubuntu.com",
+  },
   "mysql" => {
     "server_root_password" => "root",
     "server_debian_password" => "root",
@@ -28,9 +36,9 @@ default_attributes(
     "tunable" => {
       # According to MySQL docs this parameter is most important for InnoDB tables.
       # They suggest to set it to 80% of available to MySQL memory for dedicated servers.
-      "innodb_buffer_pool_size" => "512M",
+      "innodb_buffer_pool_size" => "32M",
       "table_open_cache" => "512",
-      "innodb_additional_mem_pool_size" => "32M",
+      "innodb_additional_mem_pool_size" => "16M",
       "innodb_log_buffer_size" => "16M",
       # InnoDB tables ignore this parameter but according to MySQL docs it still used
       # for temp tables.
@@ -56,12 +64,10 @@ default_attributes(
       # 2 - write at every commit but flush to disc at every second
       # 0 - write and flush every second
       "innodb_flush_log_at_trx_commit" => "0",
-
       "innodb_open_files" => "4000",
       "net_buffer_length" => "128K",
-
       "query_cache_limit" => "4M",
-      "query_cache_size" => "64M",
+      "query_cache_size" => "32M",
 
       # global memory = key_buffer_size + query_cache_size + innodb_buffer_pool_size + innodb_additional_mem_pool_size + innodb_log_buffer_size
       # per thread memory = read_buffer_size + read_rnd_buffer_size + sort_buffer_size + join_buffer_size + binlog_cache_size + thread_stack + tmp_table_size + net_buffer_length * 2

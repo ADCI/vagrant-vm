@@ -1,3 +1,4 @@
+name             "pdftk"
 maintainer       "Leonid Mamaev (ADCI)"
 maintainer_email "leonid.mamaev@gmail.com"
 license          ""

@@ -1,3 +1,4 @@
+name             "phing"
 maintainer       "Evolving Web Inc."
 maintainer_email "sysadmin@evolvingweb.ca"
 license          "All rights reserved"

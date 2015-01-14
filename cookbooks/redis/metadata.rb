@@ -1,3 +1,4 @@
+name             "redis"
 maintainer       "dkd Internet Service GmbH"
 maintainer_email "christian.trabold@dkd.de"
 license          "All rights reserved"

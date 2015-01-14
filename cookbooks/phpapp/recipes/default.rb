@@ -13,17 +13,19 @@ include_recipe "nginx"
 include_recipe "php"
 include_recipe "php::module_mysql"
 include_recipe "php::module_curl"
-include_recipe "php::module_apc"
+#include_recipe "php::module_apc"
 include_recipe "php::module_gd"
 include_recipe "php-fpm"
-include_recipe "mysql::client"
-include_recipe "mysql::server"
+#include_recipe "mysql_adci"
+include_recipe "percona::package_repo"
+include_recipe "percona::client"
+include_recipe "percona::server"
 include_recipe "http_request"
 include_recipe "http_request::default"
 
 # Create directory /var/www.
 Dir.mkdir("/var/www") unless File.exists?("/var/www")
-FileUtils.chown("vagrant", "vagrant", "/var/www")
+FileUtils.chown(ENV['SSH_USER'], ENV['SSH_USER'], "/var/www")
 
 # Delete old config files.
 Dir.glob("/etc/nginx/sites-enabled/*.conf").each { |file| File.delete(file) }

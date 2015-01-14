@@ -5,3 +5,4 @@ project/backup/*.sql
 project/backup/*.sql.gz
 .idea
 .idea/*
+*.pem

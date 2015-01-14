@@ -1,3 +1,4 @@
+name             "firefox"
 maintainer       "ADCI"
 maintainer_email "admin@adcisolutions.com"
 license          ""

@@ -1,3 +1,4 @@
+name             "xvfb"
 maintainer       "Maciej Pasternacki"
 maintainer_email "maciej@pasternacki.net"
 license          "apachev2"
