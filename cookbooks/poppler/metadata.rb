@@ -1,0 +1,6 @@
+name             "poppler"
+maintainer       "Leonid Mamaev (ADCI)"
+maintainer_email "leonid.mamaev@gmail.com"
+license          ""
+description      "Installs poppler-utils"
+version          "0.0.1"

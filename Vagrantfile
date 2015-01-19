@@ -49,7 +49,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Jmeter requires Jave VM to run which can be installed by uncommenting [chef.add_recipe "jenkins::java"] above.
     #chef.add_recipe "jmeter"
     #chef.add_recipe "imagemagick"
-
+    #chef.add_recipe "poppler"
+    #chef.add_recipe "pdftk"
+        
     # Configure available sites. For each site directory should be created in /var/www.
 
     chef.json = {

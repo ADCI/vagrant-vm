@@ -1,0 +1,32 @@
+{
+  "name": "poppler",
+  "description": "Installs poppler",
+  "long_description": "",
+  "maintainer": "Leonid Mamaev (ADCI)",
+  "maintainer_email": "leonid.mamaev@gmail.com",
+  "license": "",
+  "platforms": {
+  },
+  "dependencies": {
+    "php": [
+
+    ]
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.0.1"
+}
