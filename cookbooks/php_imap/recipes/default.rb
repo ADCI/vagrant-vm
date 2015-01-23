@@ -5,3 +5,4 @@
 #
 
 package "php5-imap"
+execute "php5enmod imap"
