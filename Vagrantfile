@@ -1,8 +1,16 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "Ubuntu precise"
-  config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+  # Ubuntu 12.04 x32.
+  #config.vm.box = "Ubuntu precise"
+  #config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+  # Ubuntu 14.10 x64.
+  #config.vm.box = "Ubuntu 14.10 x64"
+  #config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-amd64-vagrant-disk1.box"
+  # Ubuntu 14.10 x32.
+  config.vm.box = "Ubuntu 14.10 x32"
+  config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-i386-vagrant-disk1.box"
+
   config.vm.network :forwarded_port, host: 4567, guest: 4567
   #config.vm.network :forwarded_port, host: 8080, guest: 8080
 
@@ -20,9 +28,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Update Chef and Ruby
   config.vm.provision :shell, :inline => 'apt-get update'
-  config.vm.provision :shell, :inline => 'apt-get install build-essential ruby1.9.1-full --no-upgrade --yes'
-  config.vm.provision :shell, :inline => "gem install chef --version 11.10.4 --no-rdoc --no-ri --conservative"
-  
+  config.vm.provision :shell, :inline => 'apt-get install build-essential ruby ruby-dev --yes'
+  config.vm.provision :shell, :inline => 'gem install chef --no-rdoc --no-ri --conservative'
+
   # Install/update Alpine
   # config.vm.provision :shell, :inline => 'apt-get install alpine --no-upgrade --yes'
 
