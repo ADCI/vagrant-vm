@@ -42,8 +42,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "drush"
     chef.add_recipe "phing"
     chef.add_recipe "codesniffer"
-    chef.add_recipe "phpmd"
-    chef.add_recipe "phpcpd"
+    #chef.add_recipe "phpmd"
+    #chef.add_recipe "phpcpd"
     # Use following recipes when you really need it.
     #chef.add_recipe "postfix"
     #chef.add_recipe "dovecot::default"
@@ -54,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_recipe "firefox"
     #chef.add_recipe "xvfb"
     #chef.add_recipe "jenkins_plugins"
-    # Jmeter requires Jave VM to run which can be installed by uncommenting [chef.add_recipe "jenkins::java"] above.
+    # Jmeter requires Java VM to run which can be installed by uncommenting [chef.add_recipe "jenkins::java"] above.
     #chef.add_recipe "jmeter"
     #chef.add_recipe "imagemagick"
     #chef.add_recipe "poppler"
@@ -62,6 +62,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         
     # Configure available sites. For each site directory should be created in /var/www.
 
+    # Important note: do not left trailing commas after last element in array.
+    # This can cause all kinds of weird troubles.
     chef.json = {
       "project" => {
         "sites" => {
@@ -70,11 +72,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             "dir" => "/var/www/site"
           },
           "another_site" => {
-            "domain" => "site.com",
+            "domain" => "site.com"
           },
           "empty_site" => {
 
-          },
+          }
         }
       }
     }
