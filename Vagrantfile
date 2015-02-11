@@ -60,10 +60,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_recipe "poppler"
     #chef.add_recipe "pdftk"
         
-    # Configure available sites. For each site directory should be created in /var/www.
+    # Configure available sites.
 
     # Important note: do not left trailing commas after last element in array.
     # This can cause all kinds of weird troubles.
+    # Available fields are:
+    #  - port - Tells nginx to listen on this port.
+    #  - dir - Path to site's files. "project" will be added to the end of this path.
+    #  - domain - Can be used if site name and site domain are different.
+    #  - ssl - if set to "on" then ssl_certificate and maybe ssl_certificate_key also should be specified.
+    #  - ssl_certificate - Path to ssl sertificate.
+    #  - ssl_certificate_key - Path to ssl sertificate key.
     chef.json = {
       "project" => {
         "sites" => {
@@ -72,7 +79,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             "dir" => "/var/www/site"
           },
           "another_site" => {
-            "domain" => "site.com"
+            "domain" => "site.com",
           },
           "empty_site" => {
 

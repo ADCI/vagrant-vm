@@ -56,8 +56,10 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     site_name = site[0]
     site_config = site[1]
     site_port = ''
-    site_conf_type = ''
     site_domain = ''
+    ssl = ''
+    ssl_certificate = ''
+    ssl_certificate_key = ''
     docroot = "#{node[:doc_root]}/var/www/#{site_name}/project"
     site_config.each do |config|
       case config[0]
@@ -66,26 +68,22 @@ if node.has_key?("project") && node["project"].has_key?("sites")
         when 'domain'
           site_domain = config[1]
         when 'dir'
-          docroot = "#{node[:doc_root]}#{config[1]}/project"   
-      end
-      if site_port == '' && site_domain == ''
-        site_conf_type = ''
-      elsif site_port != '' && site_domain != ''
-        site_conf_type = 'podo';
-      elsif site_port != ''
-        site_conf_type = "port"
-      else
-        site_conf_type = "domain"  
+          docroot = "#{node[:doc_root]}#{config[1]}/project"
+        when 'ssl'
+          ssl = config[1].downcase
+        when 'ssl_certificate'
+          ssl_certificate = config[1]
+        when 'ssl_certificate_key'
+          ssl_certificate_key = config[1]
       end
     end
-
-    if site_conf_type == ''
-      ::Chef::Log.error("The #{site_name} project doesn't have port or domain option");
+    if site_port == '' && site_domain == ''
+      ::Chef::Log.error("The #{site_name} project doesn't have port or domain option")
       break
-    end  
+    end
 
     template "/etc/nginx/sites-available/#{site_name}.conf" do
-      source "nginx.site.conf_#{site_conf_type}.erb"
+      source "nginx.site.conf.erb"
       mode "0640"
       owner "root"
       group "root"
@@ -93,7 +91,10 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :server_name => site_name,
                 :server_port => site_port,
                 :server_domain => site_domain,
-                :server_aliases => ["*.#{site_name}"],
+                :ssl => ssl,
+                :ssl_certificate => ssl_certificate,
+                :ssl_certificate_key => ssl_certificate_key,
+                #:server_aliases => ["*.#{site_name}"],
                 :docroot => docroot,
                 :logdir => "#{node[:nginx][:log_dir]}"
                 )

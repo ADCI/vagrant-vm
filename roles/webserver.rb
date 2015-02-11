@@ -5,30 +5,41 @@ default_attributes(
   "redis" => {
     "source" => {
       "version" => "2.6.7",
-      "timeout" => "0",
+      "timeout" => "0"
     }
   },
 
   "phpapp" => {
-    "upload_max_filesize" => "32M",
     "php" => {
-      "post_max_size" => "16M",
+      # Real max upload file size will be limited by both post_max_size and
+      # upload_max_filesize. So there is no sense to make upload_max_filesize
+      # larger then post_max_size. See also nginx client_max_body_size
+      "post_max_size" => "65M",
+      "upload_max_filesize" => "64M",
       "memory_limit" => "256M",
-      "max_execution_time" => "30",
+      "max_execution_time" => "120",
       "display_errors" => "On",
       "html_errors" => "On",
-      "display_startup_errors" => "On",
-    },
+      "display_startup_errors" => "On"
+    }
   },
+
+  "nginx" => {
+    # This will limit post_max_size and upload_max_filesize.
+    # Default value is 1M. Infinite value is 0.
+    "client_max_body_size" => "65M"
+  },
+
   "percona" => {
     "server" => {
       "username" => "root",
       "root_password" => "root",
       "debian_password" => "root",
-      "debian_username" => "root",
+      "debian_username" => "root"
     },
-    "apt_keyserver" => "keyserver.ubuntu.com",
+    "apt_keyserver" => "keyserver.ubuntu.com"
   },
+
   "mysql" => {
     "server_root_password" => "root",
     "server_debian_password" => "root",
@@ -75,7 +86,7 @@ default_attributes(
       # innodb_additional_mem_pool_size won't be used.
       # total memory size min = global memory + per thread buffer size
       # total memory size max = global memory + per thread buffer size * max_connections
-      "max_connections" => "20",
+      "max_connections" => "20"
     }
   },
   
@@ -86,23 +97,23 @@ default_attributes(
       #"inet-interfaces" => "all",
       "myhostname" => "localhost",
       "mydomain" => "localdomain",
-      "mydestination" => "localhost.localdomain",
-    },
+      "mydestination" => "localhost.localdomain"
+    }
   },
   
   "dovecot" => {
     "conf" => {
       "mail_location" => "mbox:~/mail:INBOX=/var/mail/%u",
-      "mail_access_groups" => "mail",
+      "mail_access_groups" => "mail"
     },
     "protocols" => {
       "imap" => {},
-      "pop3" => {},
+      "pop3" => {}
     },
     "auth" => {
       "system" => {
         "passdb" => {
-          "driver" => "pam",
+          "driver" => "pam"
         }
       }
     }
@@ -112,7 +123,7 @@ default_attributes(
   "php" => {
     "directives" => {
       "SMTP" => "localhost.localdomain",
-      "sendmail_from" => "vagrant@localhost.localdomain",
+      "sendmail_from" => "vagrant@localhost.localdomain"
     }
   }
 )
