@@ -29,7 +29,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Update Chef and Ruby
   config.vm.provision :shell, :inline => 'apt-get update'
   config.vm.provision :shell, :inline => 'apt-get install build-essential ruby ruby-dev --yes'
-  config.vm.provision :shell, :inline => 'gem install chef --no-rdoc --no-ri --conservative'
+  # Chef 12.0.0-3 has bug which hasn't been fixed in released versions.
+  # https://github.com/chef/chef/issues/2677
+  config.vm.provision :shell, :inline => 'gem install chef -v 11.16.4 --no-rdoc --no-ri --conservative'
+  # Yeah, weird things going on.
+  config.vm.provision :shell, :inline => 'gem install chef -v 12.0.3 --no-rdoc --no-ri --conservative'
+  config.vm.provision :shell, :inline => 'gem uninstall chef -v 12.0.3'
 
   # Install/update Alpine
   # config.vm.provision :shell, :inline => 'apt-get install alpine --no-upgrade --yes'
@@ -41,42 +46,43 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "phpapp"
     chef.add_recipe "drush"
     chef.add_recipe "phing"
-    chef.add_recipe "codesniffer"
+    # Use following recipes when you really need it.
+    #chef.add_recipe "codesniffer"
     #chef.add_recipe "phpmd"
     #chef.add_recipe "phpcpd"
-    # Use following recipes when you really need it.
     #chef.add_recipe "postfix"
     #chef.add_recipe "dovecot::default"
     #chef.add_recipe "php_imap"
-    #chef.add_recipe "redis::source"
+    #chef.add_recipe "redis"
     #chef.add_recipe "jenkins::java"
     #chef.add_recipe "jenkins::master"
     #chef.add_recipe "firefox"
     #chef.add_recipe "xvfb"
     #chef.add_recipe "jenkins_plugins"
-    # Jmeter requires Java VM to run which can be installed by uncommenting [chef.add_recipe "jenkins::java"] above.
     #chef.add_recipe "jmeter"
     #chef.add_recipe "imagemagick"
     #chef.add_recipe "poppler"
     #chef.add_recipe "pdftk"
         
     # Configure available sites.
-
-    # Important note: do not left trailing commas after last element in array.
-    # This can cause all kinds of weird troubles.
     # Available fields are:
     #  - port - Tells nginx to listen on this port.
-    #  - dir - Path to site's files. "project" will be added to the end of this path.
+    #  - dir - Path to site's files. "project" will be added to the end of path.
     #  - domain - Can be used if site name and site domain are different.
-    #  - ssl - if set to "on" then ssl_certificate and maybe ssl_certificate_key also should be specified.
+    #  - flag_www_redirect - "true" if www.site.com should be redirected to site.com.
+    #  - ssl - if set to "on" then ssl_certificate and ssl_certificate_key
+    #          also should be specified.
     #  - ssl_certificate - Path to ssl sertificate.
     #  - ssl_certificate_key - Path to ssl sertificate key.
+    #  - conf_inc - Additional conf file which will be included in site's conf.
+    #               Path to file should either be relative to nginx conf dir or
+    #               absolute.
     chef.json = {
       "project" => {
         "sites" => {
           "site" => {
             "port" => 4567,
-            "dir" => "/var/www/site"
+            "dir" => "/var/www/site",
           },
           "another_site" => {
             "domain" => "site.com",

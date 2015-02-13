@@ -12,10 +12,9 @@ default_attributes(
   "phpapp" => {
     "php" => {
       # Real max upload file size will be limited by both post_max_size and
-      # upload_max_filesize. So there is no sense to make upload_max_filesize
-      # larger then post_max_size. See also nginx client_max_body_size
-      "post_max_size" => "65M",
-      "upload_max_filesize" => "64M",
+      # upload_max_filesize. See also nginx client_max_body_size
+      "post_max_size" => "16M",
+      "upload_max_filesize" => "16M",
       "memory_limit" => "256M",
       "max_execution_time" => "120",
       "display_errors" => "On",
@@ -27,7 +26,7 @@ default_attributes(
   "nginx" => {
     # This will limit post_max_size and upload_max_filesize.
     # Default value is 1M. Infinite value is 0.
-    "client_max_body_size" => "65M"
+    "client_max_body_size" => "16M"
   },
 
   "percona" => {
