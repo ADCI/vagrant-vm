@@ -1,8 +1,10 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: dovecot
 # Recipe:: user
-#
-# Copyright 2013, Onddo Labs, Sl.
+# Author:: Xabier de Zuazo (<xabier@onddo.com>)
+# Copyright:: Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,8 +27,7 @@ user node['dovecot']['user'] do
 end
 
 group node['dovecot']['group'] do
-  members [ node['dovecot']['user'] ]
+  members [node['dovecot']['user']]
   system true
   append true
 end
-

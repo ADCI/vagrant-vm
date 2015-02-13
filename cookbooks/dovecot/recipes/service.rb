@@ -1,8 +1,10 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: dovecot
 # Recipe:: service
-#
-# Copyright 2013, Onddo Labs, Sl.
+# Author:: Xabier de Zuazo (<xabier@onddo.com>)
+# Copyright:: Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +20,10 @@
 #
 
 service 'dovecot' do
-  supports :restart => true, :reload => true, :status => true
-  if node['platform'] == 'ubuntu' and Gem::Version.new(node['platform_version']) >= Gem::Version.new('13.10')
+  supports restart: true, reload: true, status: true
+  if node['platform'] == 'ubuntu' &&
+     Gem::Version.new(node['platform_version']) >= Gem::Version.new('13.10')
     provider Chef::Provider::Service::Upstart
   end
-  action [ :enable, :start ]
+  action [:enable, :start]
 end
-

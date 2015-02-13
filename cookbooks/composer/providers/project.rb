@@ -8,47 +8,42 @@
 use_inline_resources if defined?(use_inline_resources)
 
 def whyrun_supported?
-    true
+  true
 end
 
 action :install do
-    dev = new_resource.dev ? "--dev" : "--no-dev"
-    quiet = new_resource.quiet ? "--quiet" : ""
-
-    execute "install-composer-for-project" do
-        cwd new_resource.project_dir
-        command "#{node['composer']['bin']} install --no-interaction --no-ansi #{quiet} #{dev}"
-        action :run
-        only_if "which composer"
-    end
-
-    new_resource.updated_by_last_action(true)
+  make_execute 'install'
+  new_resource.updated_by_last_action(true)
 end
 
 action :update do
-    dev = new_resource.dev ? "--dev" : "--no-dev"
-    quiet = new_resource.quiet ? "--quiet" : ""
-
-    execute "update-composer-for-project" do
-        cwd new_resource.project_dir
-        command "#{node['composer']['bin']} update --no-interaction --no-ansi #{quiet} #{dev}"
-        action :run
-        only_if "which composer"
-    end
-
-    new_resource.updated_by_last_action(true)
+  make_execute 'update'
+  new_resource.updated_by_last_action(true)
 end
 
 action :dump_autoload do
-    dev = new_resource.dev ? "--dev" : "--no-dev"
-    quiet = new_resource.quiet ? "--quiet" : ""
+  make_execute 'dump-autoload'
+  new_resource.updated_by_last_action(true)
+end
 
-    execute "dump-autoload-composer-for-project" do
-        cwd new_resource.project_dir
-        command "#{node['composer']['bin']} dump-autoload --no-interaction --no-ansi #{quiet} #{dev}"
-        action :run
-        only_if "which composer"
-    end
+def make_execute(cmd)
+  dev = new_resource.dev ? '--dev' : '--no-dev'
+  quiet = new_resource.quiet ? '--quiet' : ''
+  optimize = new_resource.optimize_autoloader ? optimize_flag(cmd) : ''
+  prefer_dist = new_resource.prefer_dist ? '--prefer-dist' : ''
 
-    new_resource.updated_by_last_action(true)
+  execute "#{cmd}-composer-for-project" do
+    cwd new_resource.project_dir
+    command "#{node['composer']['bin']} #{cmd} --no-interaction --no-ansi #{quiet} #{dev} #{optimize} #{prefer_dist}"
+    environment 'COMPOSER_HOME' => Composer.home_dir(node)
+    action :run
+    only_if 'which composer'
+    user new_resource.user
+    group new_resource.group
+    umask new_resource.umask
+  end
+end
+
+def optimize_flag(cmd)
+  (%(install update).include? cmd) ? '--optimize-autoloader' : '--optimize'
 end

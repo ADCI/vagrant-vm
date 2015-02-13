@@ -1,30 +1,35 @@
 Description
 ===========
+[![Cookbook Version](https://img.shields.io/cookbook/v/dovecot.svg?style=flat)](https://supermarket.getchef.com/cookbooks/dovecot)
+[![Dependency Status](http://img.shields.io/gemnasium/onddo/dovecot-cookbook.svg?style=flat)](https://gemnasium.com/onddo/dovecot-cookbook)
+[![Code Climate](http://img.shields.io/codeclimate/github/onddo/dovecot-cookbook.svg?style=flat)](https://codeclimate.com/github/onddo/dovecot-cookbook)
+[![Build Status](http://img.shields.io/travis/onddo/dovecot-cookbook/2.0.0.svg?style=flat)](https://travis-ci.org/onddo/dovecot-cookbook)
 
 Installs and configures [Dovecot](http://www.dovecot.org/), open source IMAP and POP3 email server.
 
 Requirements
 ============
 
-## Platform:
+## Supported Platforms
 
 This cookbook has been tested on the following platforms:
 
-* CentOS >= 6.0
-* Debian >= 7.0
-* Fedora >= 18.0
-* Ubuntu >= 12.04
+* CentOS `>= 6.0`
+* Debian `>= 7.0`
+* Fedora `>= 18.0`
+* Ubuntu `>= 12.04`
 * Amazon
 
 Let me know if you use it successfully on any other platform.
 
-## Cookbooks:
+## Required Cookbooks
 
-* ohai
+* [ohai](https://supermarket.getchef.com/cookbooks/ohai)
 
-## Applications:
+## Required Applications
 
-* **Dovecot >= 2**: requires this version of dovecot to be available by the distribution's package manager.
+* **Dovecot `>= 2`**: requires this version of dovecot to be available by the distribution's package manager.
+* Ruby `>= 1.9.3`
 
 Attributes
 ==========
@@ -38,23 +43,28 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
     <th>Default</th>
   </tr>
   <tr>
+    <td><code>node['dovecot']['install_from']</code></td>
+    <td>Determines how Dovecot is installed from. Only <code>"package"</code> is supported for now.</td>
+    <td><code>"package"</code></td>
+  </tr>
+  <tr>
     <td><code>node['dovecot']['user']</code></td>
-    <td>Dovector system user. Should no be changed.</td>
+    <td>Dovecot system user. Should no be changed.</td>
     <td><code>"dovecot"</code></td>
   </tr>
   <tr>
     <td><code>node['dovecot']['group']</code></td>
-    <td>Dovector system group. Should no be changed.</td>
+    <td>Dovecot system group. Should no be changed.</td>
     <td><code>"dovecot"</code></td>
   </tr>
   <tr>
     <td><code>node['dovecot']['lib_path']</code></td>
-    <td>Dovector library path. Should no be changed.</td>
+    <td>Dovecot library path. Should no be changed.</td>
     <td><em>calculated</em></td>
   </tr>
   <tr>
     <td><code>node['dovecot']['conf_path']</code></td>
-    <td>Dovector configruration files path. Should no be changed.</td>
+    <td>Dovecot configuration files path. Should no be changed.</td>
     <td><code>"/etc/dovecot"</code></td>
   </tr>
   <tr>
@@ -185,7 +195,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Main configuration attributes
+## Main Configuration Attributes
 
 * Configuration file: `dovecot.conf`.
 
@@ -257,7 +267,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Authentication processes attributes
+## Authentication Processes Attributes
 
 * Configuration file: `conf.d/10-auth.conf`.
 
@@ -364,7 +374,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Director-specific attributes
+## Director-specific Attributes
 
 * Configuration file: `conf.d/10-director.conf`.
 
@@ -396,7 +406,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Log destination attributes
+## Log Destination Attributes
 
 * Configuration file: `conf.d/10-logging.conf`.
 
@@ -483,7 +493,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Mailbox locations and namespaces attributes
+## Mailbox Locations and Namespaces Attributes
 
 * Configuration file: `conf.d/10-mail.conf`.
 
@@ -705,7 +715,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## Master configuration file attributes
+## Master Configuration File Attributes
 
 * Configuration file: `conf.d/10-master.conf`.
 
@@ -742,7 +752,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## SSL attributes
+## SSL Attributes
 
 * Configuration file: `conf.d/10-ssl.conf`.
 
@@ -799,7 +809,7 @@ To see a more complete description of the attributes, go to the [Dovecot wiki2 c
   </tr>
 </table>
 
-## LDA specific attributes
+## LDA Specific Attributes
 
 Also used by LMTP.
 
@@ -868,7 +878,7 @@ Also used by LMTP.
   </tr>
 </table>
 
-## LMTP specific attributes
+## LMTP Specific Attributes
 
 * Configuration file: `conf.d/20-lmtp.conf`
 
@@ -890,7 +900,7 @@ Also used by LMTP.
   </tr>
 </table>
 
-## Berkeley DB DB_CONFIG attributes
+## Berkeley DB DB_CONFIG Attributes
 
 * Configuration file: `dovecot-db.conf.ext`.
 
@@ -907,7 +917,7 @@ Also used by LMTP.
   </tr>
 </table>
 
-## Dictionary quota SQL attributes
+## Dictionary Quota SQL Attributes
 
 * Configuration files: `dovecot-dict-sql.conf.ext`.
 
@@ -929,7 +939,7 @@ Also used by LMTP.
   </tr>
 </table>
 
-## LDAP authentication attributes
+## LDAP Authentication Attributes
 
 * Condiguration files: `dovecot-ldap.conf.ext`.
 
@@ -1091,7 +1101,7 @@ Also used by LMTP.
   </tr>
 </table>
 
-## SQL authentication attributes
+## SQL Authentication Attributes
 
 * Configuration file: `dovecot-sql.conf.ext`.
 
@@ -1133,6 +1143,64 @@ Also used by LMTP.
   </tr>
 </table>
 
+## Distribution Packages Names Attributes
+
+These attributes below contain the default required distribution packages for the supported platforms. But you are free to create your own to support other platforms. Keep in mind that all are put inside a subkey (`type`). This `node['dovecot']['packages'][type]` attribute is then used together with the `node['dovecot']['conf_files'][type]` attribute to generate the configuration files. 
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['core']</code></td>
+    <td>Dovecot core package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['imap']</code></td>
+    <td>Dovecot IMAP package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['pop3']</code></td>
+    <td>Dovecot POP3 package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['lmtp']</code></td>
+    <td>Dovecot LMTP package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['sieve']</code></td>
+    <td>Dovecot Sieve package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['ldap']</code></td>
+    <td>Dovecot LDAP package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['sqlite']</code></td>
+    <td>Dovecot SQLite package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['mysql']</code></td>
+    <td>Dovecot MySQL package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+    <td><code>node['dovecot']['packages']['pgsql']</code></td>
+    <td>Dovecot PostgreSQL package names array.</td>
+    <td><em>calculated</em></td>
+  </tr>
+  <tr>
+</table>
+
 Recipes
 =======
 
@@ -1152,9 +1220,9 @@ Generates all the configuration files. Used by the default recipe.
 
 Provides an Ohai plugin for reading dovecot install information.
 
-## dovecot::packages
+## dovecot::from_package
 
-Installs the required packages. Used by the default recipe.
+Installs the required packages. Used by the default recipe if `node['dovecot']['install_from]` is `package`.
 
 ## dovecot::service
 
@@ -1397,7 +1465,7 @@ node.default['dovecot']['plugins']['sieve'] = {
 }
 ```
 
-## Protocols Example
+## Protocols Examples
 
 Protocol attribute values should be of type hash.
 
@@ -1407,6 +1475,12 @@ Supported protocols are the following: `lda`, `imap`, `lmtp`, `sieve` and `pop3`
 node.default['dovecot']['protocols']['lda'] = {
   'mail_plugins' => [ '$mail_plugins' ],
 }
+```
+
+To enable the IMAP protocol without additional settings:
+
+```ruby
+node.default['dovecot']['protocols']['imap'] = {}
 ```
 
 ## Service Examples
@@ -1591,60 +1665,22 @@ If you want a more complete example, you can look at the [postfix-dovecot](https
 Testing
 =======
 
-## Requirements
-
-* `vagrant`
-* `berkshelf` >= `2.0`
-* `test-kitchen` >= `1.2`
-* `kitchen-vagrant` >= `0.10`
-
-## Running the tests
-
-```bash
-$ kitchen test
-$ kitchen verify
-[...]
-```
-
-### Running the tests in the cloud
-
-#### Requirements:
-
-* `kitchen-vagrant` >= `0.10`
-* `kitchen-digitalocean` >= `0.5`
-* `kitchen-ec2` >= `0.8`
-
-You can run the tests in the cloud instead of using vagrant. First, you must set the following environment variables:
-
-* `AWS_ACCESS_KEY_ID`
-* `AWS_SECRET_ACCESS_KEY`
-* `AWS_KEYPAIR_NAME`: EC2 SSH public key name. This is the name used in Amazon EC2 Console's Key Pars section.
-* `EC2_SSH_KEY_PATH`: EC2 SSH private key local full path. Only when you are not using an SSH Agent.
-* `DIGITAL_OCEAN_CLIENT_ID`
-* `DIGITAL_OCEAN_API_KEY`
-* `DIGITAL_OCEAN_SSH_KEY_IDS`: DigitalOcean SSH numeric key IDs.
-* `DIGITAL_OCEAN_SSH_KEY_PATH`: DigitalOcean SSH private key local full path. Only when you are not using an SSH Agent.
-
-Then, you must configure test-kitchen to use `.kitchen.cloud.yml` configuration file:
-
-```
-$ export KITCHEN_LOCAL_YAML=".kitchen.cloud.yml"
-$ kitchen list
-[...]
-```
+See [TESTING.md](https://github.com/onddo/dovecot-cookbook/blob/master/TESTING.md).
 
 Contributing
 ============
 
-1. Fork the repository on Github
-2. Create a named feature branch (like `add_component_x`)
-3. Write you change
-4. Write tests for your change (if applicable)
-5. Run the tests, ensuring they all pass
-6. Submit a Pull Request using Github
+Please do not hesitate to [open an issue](https://github.com/onddo/dovecot-cookbook/issues/new) with any questions or problems.
+
+See [CONTRIBUTING.md](https://github.com/onddo/dovecot-cookbook/blob/master/CONTRIBUTING.md).
+
+TODO
+====
+
+See [TODO.md](https://github.com/onddo/dovecot-cookbook/blob/master/TODO.md).
 
 License and Author
-=====================
+==================
 
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
@@ -1654,18 +1690,18 @@ License and Author
 | **Contributor:**     | [Johan Svensson](https://github.com/loxley)
 | **Contributor:**     | [Arnold Krille](https://github.com/kampfschlaefer)
 | **Contributor:**     | [claudex](https://github.com/claudex)
+| **Contributor:**     | [Jordi Llonch](https://github.com/llonchj)
 | **Copyright:**       | Copyright (c) 2013-2014, Onddo Labs, SL. (www.onddo.com)
 | **License:**         | Apache License, Version 2.0
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

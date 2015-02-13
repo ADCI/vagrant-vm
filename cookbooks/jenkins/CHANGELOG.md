@@ -2,6 +2,100 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.2.2 (2015-01-15)
+-------------------
+### Bug
+- Gem::Version raising ArgumentError for weirdly versioned Jenkins plugins
+- Force UTF-8 encoding when parsing update center JSON
+- README grammer fixes
+
+v2.2.1 (2014-12-02)
+-------------------
+### Bug
+- Ensure Win service install command respects alternate service names
+
+v2.2.0 (2014-12-02)
+-------------------
+### Bug
+- Handle jobs that do not have a `disabled` attribute
+- Remove unneeded service restart in Windows slaves
+- Update Jenkins service check to use `WIN32OLE`
+- Properly quote executor file paths cause $WINDOWS
+- Properly escape backslashes in generated Groovy code
+- Jenkins timeout shouldn't rescue Net::HTTP timeout
+- Make sure Net::HTTP#use_ssl is turned on for https end-point
+- Wrap converted Groovy strings in single quotes
+- Recover from commands executed with unknown credentials. This should also fix some cases of JENKINS-22346.
+
+### Improvement
+- Use atomic updates when downloading the slave JAR
+- Create the `slave.jar` in a slave’s JENKINS_HOME
+- Support a checksum attribute for `winsw.exe` download
+- Support setting the `PATH` on Windows slave
+- Add .NET 4.0 compat fix for `winsw`
+- Restart services when `slave.jar` is updated
+- Allow `jenkins_slave` to be used as a standalone resource
+- Add attribute for configuring Runit sv_timeout on masters installed from war
+- Add attribute for creating `jenkins` user as a system account
+- Allow `Executor#execute!` to pass options to underlying `Shellout` instance.
+- Set the senstive attribute for the jenkins cli private key file
+- Don’t backup plugins on uninstall
+- Properly allow installation of specific versions of a plugin. Previously this only worked when a source URL was provided.
+- Optionally ensure a plugin’s dependencies are installed before proceeding with it’s installation
+- Handle plugin downgrades correctly (requires an uninstall of existing, newer version).
+
+v2.1.2 (2014-07-02)
+-------------------
+- Fix a bug where `jenkins_windows_slave` was being called as `jenkins_jnlp_slave`
+
+v2.1.1 (2014-06-30)
+-------------------
+- Use the update-center to install plugins and their dependencies
+- Handle `super` calls correctly in `load_current_resource`
+- Backport Chef patches to temporary libraries
+- Default `Slave#environment` to `nil` instead of `{}`
+- Fix a bug where `super` was called in DSL methods
+
+
+v2.1.0 (2014-06-26)
+-------------------
+- Change Jenkins command prefix to use the slave object
+- Escape data given to the executor
+- Always read plugin manifest files as UTF
+- Typo: Shelllwords -> Shellwords
+- Upgrade to Berkshelf 3
+- Add ChefSpec tests for recipes
+- Add Jenkins::Executor tests
+- Bug: Use ::File instead of File
+- Remove foodcritic
+- Fix Rubocop warnings
+- Only create user, group and directories on war installations
+- Only create supporting resources on JNLP slaves
+- Split `jnlp` and `ssh` slave fixtures
+- Document that SSH slaves should be created on the master
+- Ensure compiled attributes respect overrides
+- Ensure plugin installs respect global mirror setting
+- Add fallback to `jenkins_slave` matcher if authn is enabled
+- Update authn int tests to load private key from data bag item
+- Add integration test coverage for smoke tests
+- Add support for listening on a specific address
+- Allow user to specify the password
+- Use a temporary file to run groovy scripts
+- Use executor['timeout'] for timeout in ShellOut in executor.execute!
+- Give timeout a default value (60) in the executor
+- Ignore Errno::ENETUNREACH until timeout
+- Fix a bug in default windows domain name
+- Update winsw version to 1.16
+- Upgrade to ChefSpec 4 and fix CI
+- Use the run_state to store sensitive information
+- Switch to LWHRPS for everything
+- Handle nil values in credentials comparison
+- Add ChefSpec matchers for all LWRPs
+- Don't automatically restart after plugin installation
+- Add the ability to pass in a list of additional options in `jenkins_plugin`
+- Specify actions and default_action in inherited resources
+
+
 v2.0.2 (2014-01-30)
 -------------------
 - Add support for prefix and suffix commands on SSH nodes

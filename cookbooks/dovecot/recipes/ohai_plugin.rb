@@ -1,8 +1,10 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: dovecot
 # Recipe:: ohai_plugin
-#
-# Copyright 2013, Onddo Labs, Sl.
+# Author:: Xabier de Zuazo (<xabier@onddo.com>)
+# Copyright:: Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,18 +19,24 @@
 # limitations under the License.
 #
 
+def ohai7?
+  Gem::Requirement.new('>= 7').satisfied_by?(Gem::Version.new(Ohai::VERSION))
+end
+
+source_dir = ohai7? ? 'ohai7_plugins' : 'ohai_plugins'
+
 ohai 'reload_dovecot' do
   plugin 'dovecot'
   action :nothing
 end
 
 template "#{node['ohai']['plugin_path']}/dovecot.rb" do
-  source 'ohai_plugins/dovecot.rb.erb'
+  source "#{source_dir}/dovecot.rb.erb"
   owner 'root'
   group 'root'
   mode '0755'
   variables(
-    :enable_build_options => node['dovecot']['ohai_plugin']['build-options']
+    enable_build_options: node['dovecot']['ohai_plugin']['build-options']
   )
   notifies :reload, 'ohai[reload_dovecot]', :immediately
 end

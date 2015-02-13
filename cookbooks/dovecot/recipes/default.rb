@@ -1,8 +1,10 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: dovecot
 # Recipe:: default
-#
-# Copyright 2013, Onddo Labs, Sl.
+# Author:: Xabier de Zuazo (<xabier@onddo.com>)
+# Copyright:: Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +21,6 @@
 
 include_recipe 'dovecot::ohai_plugin'
 include_recipe 'dovecot::user'
+include_recipe "dovecot::from_#{node['dovecot']['install_from']}"
 include_recipe 'dovecot::conf_files'
-include_recipe 'dovecot::packages'
 include_recipe 'dovecot::service'
-

@@ -2,7 +2,7 @@
 # Cookbook Name:: pdepend
 # Attributes:: composer
 #
-# Copyright 2013, Escape Studios
+# Copyright 2013-2014, Escape Studios
 #
 
-default[:pdepend][:prefix] = "/usr/bin"
+default['pdepend']['prefix'] = '/usr/bin'

@@ -1,20 +1,12 @@
 #
 # Cookbook Name:: phing
-#
 # Recipe:: default
 #
+# Copyright 2013, Sergey Storchay
+#
+# Licensed under MIT:
+# http://raw.github.com/r8/php-phing/master/LICENSE.txt
 
 include_recipe "php"
 
-channel = "pear.phing.info"
-execute "pear channel-discover #{channel}" do
-  not_if "pear list-channels | grep #{channel}"
-end
-
-execute "pear install phing/phing" do
-  not_if "pear list -c phing | grep '^phing '"
-end
-
-execute "pear install VersionControl_Git-alpha" do
-  not_if "pear list VersionControl_Git-alpha"
-end
+include_recipe "phing::#{node["phing"]["install_method"]}"

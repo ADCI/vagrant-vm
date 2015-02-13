@@ -12,9 +12,7 @@ Requirements
 ============
 
 This cookbook builds redis from source, so it should work on any architecture for the supported distributions.  Init scripts are installed into /etc/init.d/
-
-It depends on the ulimit cookbook: https://github.com/bmhatfield/chef-ulimit and the build-essentials cookbook: https://github.com/opscode-cookbooks/build-essential
-
+It depends on the ulimit cookbook: https://github.com/bmhatfield/chef-ulimit
 
 Platforms
 ---------
@@ -24,10 +22,8 @@ Platforms
 
 Testing
 -------
-This cookbook is tested with rspec/chefspec and test-kitchen/serverspec.  Run `bundle install` to install required gems.
+This cookbook is tested with test-kitchen and serverspec.  Run `bundle install` to install required gems.
 
-* rake spec
-* rake integration
 * knife cookbook test redisio -o ../
 * kitchen test
 
@@ -240,7 +236,7 @@ Configuration options, each option corresponds to the same-named configuration o
 * `redisio['mirror']` - mirror server with path to download redis package, default is https://redis.googlecode.com/files
 * `redisio['base_name']` - the base name of the redis package to be downloaded (the part before the version), default is 'redis-'
 * `redisio['artifact_type']` - the file extension of the package.  currently only .tar.gz and .tgz are supported, default is 'tar.gz'
-* `redisio['version']` - the version number of redis to install (also appended to the `base_name` for downloading), default is '2.8.17'
+* `redisio['version']` - the version number of redis to install (also appended to the `base_name` for downloading), default is '2.6.10'
 * `redisio['safe_install'] - prevents redis from installing itself if another version of redis is installed, default is true
 * `redisio['base_piddir'] - This is the directory that redis pidfile directories and pidfiles will be placed in.  Since redis can run as non root, it needs to have proper
                            permissions to the directory to create its pid.  Since each instance can run as a different user, these directories will all be nested inside this base one.
@@ -314,7 +310,7 @@ Available options and their defaults
 'includes'                   => nil
 ```
 
-* `redisio['servers']` - An array where each item is a set of key value pairs for redis instance specific settings.  The only required option is 'port'.  These settings will override the options in 'default_settings', if it is left `nil` it will default to `[{'port' => '6379'}]`. If set to `[]` (empty array), no instances will be created.
+* `redisio['servers']` - An array where each item is a set of key value pairs for redis instance specific settings.  The only required option is 'port'.  These settings will override the options in 'default_settings', if it is left empty it will default to [{'port' => '6379'}]
 
 The redis_gem recipe  will also allow you to install the redis ruby gem, these are attributes related to that, and are in the redis_gem attributes file.
 
@@ -343,7 +339,7 @@ The sentinel recipe's use their own attribute file.
 
 * `redisio['redisio']['sentinel']['manage_config']` - Should the cookbook manage the redis and redis sentinel config files.  This is best set to false when using redis_sentinel as it will write state into both configuration files.
 
-* `redisio['redisio']['sentinels']` - Array of sentinels to configure on the node. These settings will override the options in 'sentinel_defaults', if it is left `nil` it will default to `[{'port' => '26379', 'name' => 'mycluster', 'master_ip' => '127.0.0.1', 'master_port' => 6379}]`. If set to `[]` (empty array), no instances will be created.
+* `redisio['redisio']['sentinels']` - Array of sentinels to configure on the node.
 
 
 Resources/Providers
@@ -440,3 +436,4 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
+

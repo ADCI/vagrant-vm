@@ -21,7 +21,7 @@
 # on GitHub, where PEAR repo uses CNAME record.
 
 # Chef resources need unique names in case in run_list twice.
-php_pear "pear-drush" do
+php_pear "PEAR-drush" do
   package_name "PEAR"
   version "1.9.1"
   action :upgrade

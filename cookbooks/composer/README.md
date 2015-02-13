@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/escapestudios-cookbooks/composer.png)](https://travis-ci.org/escapestudios-cookbooks/composer)
+
 Description
 ===========
 
@@ -11,9 +13,10 @@ Requirements
 
 ## Cookbooks:
 
+* php
+
 This cookbook recommends the following cookbooks:
 
-* php
 * windows
 
 ### Depending on your environment, these recommended cookbooks are actual dependencies (depends):
@@ -37,7 +40,9 @@ Attributes
 * `node['composer']['bin']` - bin directory
 * `node['composer']['install_globally']` - Installation method, ':source' or ':package' - default true
 * `node['composer']['mask']` - Mask for composer.phar - 0755
+* `node['composer']['link_type']` - link type for composer.phar link - default :symbolic
 * `node['composer']['global_configs']` - Hash with global config options for users, eg. { "userX" => { "github-oauth" => { "github.com" => "userX_oauth_token" }, "vendor-dir" => "myvendordir" } } - default {}
+* `node['composer']['home_dir']` - COMPOSER_HOME, defaults to nil (in which case install_dir will be used), please do read the [Composer documentation on COMPOSER_HOME](https://getcomposer.org/doc/03-cli.md#composer-home) when setting a custom home_dir
 * `node['composer']['php_recipe']` - The php recipe to include, defaults to "php::default"
 
 Resources / Providers
@@ -56,6 +61,7 @@ This cookbook includes an LWRP for managing a Composer project
 - project_dir: The directory where your project's composer.json can be found
 - dev: Install packages listed in require-dev, default false
 - quiet: Do not output any message, default true
+- optimize_autoloader: Optimize PSR0 packages to use classmaps, default false
 
 #### Examples
 ```
@@ -63,6 +69,7 @@ This cookbook includes an LWRP for managing a Composer project
 composer_project "/path/to/project" do
     dev false
     quiet true
+    prefer_dist false
     action :install
 end
 
@@ -97,7 +104,7 @@ References
 License and Authors
 ===================
 
-Author: David Joos <david@escapestudios.com>
+Author: David Joos <david.joos@escapestudios.com>
 Author: Escape Studios Development <dev@escapestudios.com>
 Copyright: 2012-2014, Escape Studios
 

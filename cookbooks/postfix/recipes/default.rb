@@ -1,9 +1,9 @@
-#
-# Author:: Joshua Timberman(<joshua@opscode.com>)
+# encoding: utf-8
+# Author:: Joshua Timberman(<joshua@getchef.com>)
 # Cookbook Name:: postfix
 # Recipe:: default
 #
-# Copyright 2009-2012, Opscode, Inc.
+# Copyright 2009-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,43 +18,28 @@
 # limitations under the License.
 #
 
-package "postfix"
+include_recipe 'postfix::_common'
 
-if node['postfix']['use_procmail']
-  package "procmail"
+if node['postfix']['main']['smtp_sasl_auth_enable'] == 'yes'
+  include_recipe 'postfix::sasl_auth'
 end
 
-service "postfix" do
-  supports :status => true, :restart => true, :reload => true
-  action :enable
+if node['postfix']['use_alias_maps']
+  include_recipe 'postfix::aliases'
 end
 
-case node['platform_family']
-when "rhel", "fedora"
-  service "sendmail" do
-    action :nothing
-  end
-
-  execute "switch_mailer_to_postfix" do
-    command "/usr/sbin/alternatives --set mta /usr/sbin/sendmail.postfix"
-    notifies :stop, "service[sendmail]"
-    notifies :start, "service[postfix]"
-    not_if "/usr/bin/test /etc/alternatives/mta -ef /usr/sbin/sendmail.postfix"
-  end
+if node['postfix']['use_transport_maps']
+  include_recipe 'postfix::transports'
 end
 
-%w{main master}.each do |cfg|
-  template "/etc/postfix/#{cfg}.cf" do
-    source "#{cfg}.cf.erb"
-    owner "root"
-    group 0
-    mode 00644
-    notifies :restart, "service[postfix]"
-    variables(:settings => node['postfix'][cfg])
-    cookbook node['postfix']["#{cfg}_template_source"]
-  end
+if node['postfix']['use_access_maps']
+  include_recipe 'postfix::access'
 end
 
-service "postfix" do
-  action :start
+if node['postfix']['use_virtual_aliases']
+  include_recipe 'postfix::virtual_aliases'
+end
+
+if node['postfix']['use_virtual_aliases_domains']
+  include_recipe 'postfix::virtual_aliases_domains'
 end

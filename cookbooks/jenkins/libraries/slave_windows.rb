@@ -19,48 +19,39 @@
 # limitations under the License.
 #
 
-require 'uri'
+require_relative '_params_validate'
+require_relative 'slave'
 require_relative 'slave_jnlp'
 
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
-    provides :jenkins_jnlp_slave, on_platforms: ['windows']
+    # Chef attributes
+    provides :jenkins_windows_slave, on_platforms: %w(windows)
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_windows_slave
 
-      # Set the provider
-      @provider = Provider::JenkinsWindowsSlave
+    # Actions
+    actions :create, :delete, :connect, :disconnect, :online, :offline
+    default_action :create
 
-      # Set the default attributes
-      @remote_fs = 'C:\jenkins'
-      @user      = 'LocalSystem'
-      @password  = nil
-      @winsw_url = 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.13/winsw-1.13-bin.exe'
-    end
-
-    #
-    # Password of the user that manages the slave process. This is used
-    # to configure the service that manages the slave process.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def password(arg = nil)
-      set_or_return(:password, arg, kind_of: String)
-    end
-
-    #
-    # URL of the `winsw` wrapper executable which is used to install the
-    # Windows service which launches the slave process.
-    #
-    # @see https://github.com/kohsuke/winsw
-    # @param [String] arg
-    # @return [String]
-    #
-    def winsw_url(arg = nil)
-      set_or_return(:winsw_url, arg, kind_of: String)
-    end
+    # Attributes
+    attribute :password,
+      kind_of: String
+    attribute :user,
+      kind_of: String,
+      default: 'LocalSystem'
+    attribute :remote_fs,
+      kind_of: String,
+      default: 'C:\jenkins'
+    attribute :winsw_url,
+      kind_of: String,
+      default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
+    attribute :winsw_checksum,
+      kind_of: String,
+      default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
+    attribute :path,
+      kind_of: String
   end
 end
 
@@ -68,7 +59,6 @@ class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJNLPSlave
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)
-
       super
     end
 
@@ -84,6 +74,7 @@ class Chef
       #  * slave_jar_resource
       #
       slave_exe_resource.run_action(:create)
+      slave_compat_xml.run_action(:create)
       slave_xml_resource.run_action(:create)
       install_service_resource.run_action(:run)
       service_resource.run_action(:start)
@@ -103,12 +94,38 @@ class Chef
     #
     def slave_exe_resource
       return @slave_exe_resource if @slave_exe_resource
-      slave_exe = ::File.join(new_resource.remote_fs, 'jenkins-slave.exe')
+      slave_exe = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe")
       @slave_exe_resource = Chef::Resource::RemoteFile.new(slave_exe, run_context)
       @slave_exe_resource.source(new_resource.winsw_url)
+      @slave_exe_resource.checksum(new_resource.winsw_checksum)
       @slave_exe_resource.backup(false)
-      @slave_exe_resource.notifies(:restart, "service[#{new_resource.service_name}]")
       @slave_exe_resource
+    end
+
+    #
+    # winsw technically only runs under .NET 2.0 but we can force 4.0
+    # compat by dropping off the following file. More details at:
+    #
+    #   https://github.com/kohsuke/winsw#net-runtime-40
+    #
+    # The caller will need to call `run_action` on the resource.
+    #
+    # @return [Chef::Resource::File]
+    #
+    def slave_compat_xml
+      return @slave_compat_xml if @slave_compat_xml
+      slave_compat_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe.config")
+      @slave_compat_xml = Chef::Resource::File.new(slave_compat_xml, run_context)
+      @slave_compat_xml.content(<<-EOH.gsub(/ ^{8}/, '')
+        <configuration>
+          <startup>
+            <supportedRuntime version="v2.0.50727" />
+            <supportedRuntime version="v4.0" />
+          </startup>
+        </configuration>
+      EOH
+      )
+      @slave_compat_xml
     end
 
     #
@@ -121,14 +138,14 @@ class Chef
     def slave_xml_resource
       return @slave_xml_resource if @slave_xml_resource
 
-      slave_xml = ::File.join(new_resource.remote_fs, 'jenkins-slave.xml')
+      slave_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.xml")
       # Determine if our user has a domain
       user_parts = new_resource.user.match(/(.*)\\(.*)/)
       if user_parts
         user_domain = match[1]
         user_account   = match[2]
       else
-        user_domain = nil
+        user_domain = "."
         user_account   = new_resource.user
       end
 
@@ -145,8 +162,9 @@ class Chef
         user_domain:   user_domain,
         user_account:  user_account,
         user_password: new_resource.password,
+        path:          new_resource.path,
       )
-      @slave_xml_resource.notifies(:restart, "service[#{new_resource.service_name}]")
+      @slave_xml_resource.notifies(:restart, service_resource)
       @slave_xml_resource
     end
 
@@ -162,13 +180,10 @@ class Chef
 
       description = "Install '#{new_resource.service_name}' service"
       @install_service_resource = Chef::Resource::Execute.new(description, run_context)
-      @install_service_resource.command('jenkins-slave.exe install')
+      @install_service_resource.command("#{new_resource.service_name}.exe install")
       @install_service_resource.cwd(new_resource.remote_fs)
-      @install_service_resource.only_if do
-        WMI::Win32_Service.find(
-          :first,
-          conditions: { name: new_resource.service_name },
-        ).nil?
+      @install_service_resource.not_if do
+        wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
       @install_service_resource
     end
@@ -181,12 +196,15 @@ class Chef
 
       @service_resource = Chef::Resource::Service.new(new_resource.service_name, run_context)
       @service_resource.only_if do
-        !WMI::Win32_Service.find(
-          :first,
-          conditions: { name: new_resource.service_name },
-        ).nil?
+        wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
       @service_resource
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_windows_slave,
+  platform: :windows,
+  provider: Chef::Provider::JenkinsWindowsSlave
+)

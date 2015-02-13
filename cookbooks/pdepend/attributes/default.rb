@@ -2,8 +2,8 @@
 # Cookbook Name:: pdepend
 # Attributes:: default
 #
-# Copyright 2013, Escape Studios
+# Copyright 2013-2014, Escape Studios
 #
 
-default[:pdepend][:install_method] = "pear"
-default[:pdepend][:version] = "latest"
+default['pdepend']['install_method'] = 'composer'
+default['pdepend']['version'] = 'latest'

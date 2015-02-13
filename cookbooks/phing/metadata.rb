@@ -1,8 +1,17 @@
 name             "phing"
-maintainer       "Evolving Web Inc."
-maintainer_email "sysadmin@evolvingweb.ca"
-license          "All rights reserved"
-description      "Installs and configures phing"
-version          "0.0.1"
+maintainer       "Dieter Blomme"
+maintainer_email "dieterblomme@gmail.com"
+license          "MIT"
+description      "Installs/Configures Phing"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "0.0.3"
 
-depends "php"
+%w{ debian ubuntu redhat centos fedora scientific amazon }.each do |os|
+  supports os
+end
+
+depends 'php'
+depends 'composer'
+
+recipe "phing", "Installs Phing"
+recipe "phing::pear", "Installs Phing through PEAR"

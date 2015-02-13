@@ -1,22 +1,26 @@
 jenkins Cookbook
 ================
-[![Build Status](https://secure.travis-ci.org/opscode-cookbooks/jenkins.png?branch=master)](http://travis-ci.org/opscode-cookbooks/jenkins)
+[![Build Status](http://img.shields.io/travis/opscode-cookbooks/jenkins.svg)][travis]
+
+
+[travis]: http://travis-ci.org/opscode-cookbooks/jenkins
 
 Installs and configures Jenkins CI master & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
 
 This project is managed by the CHEF Release Engineering team. For more information on the Release Engineering team's contribution, triage, and release process, please consult the [CHEF Release Engineering OSS Management Guide](https://docs.google.com/a/opscode.com/document/d/1oJB0vZb_3bl7_ZU2YMDBkMFdL-EWplW1BJv_FXTUOzg/edit).
-
 
 Requirements
 ------------
 - Chef 11 or higher
 - **Ruby 1.9.3 or higher**
 
-
 Attributes
 ----------
 In order to keep the README managable and in sync with the attributes, this cookbook documents attributes inline. The usage instructions and default values for attributes can be found in the individual attribute files.
 
+Examples
+---------
+Documentation and examples are provided inline using YARD.  The tests and fixture cookbooks in `tests` and `tests/fixtures` are intended to be a further source of examples.
 
 Recipes
 -------
@@ -38,8 +42,6 @@ Resource/Provider
 This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI), supporting the following actions:
 
     :execute
-
-Here's an [example list of Jenkins commands](https://gist.github.com/sethvargo/7814182), although these can change with major version releases. For example, to perform a Jenkins safe restart:
 
 ```ruby
 jenkins_command 'safe-restart'
@@ -94,6 +96,11 @@ end
 ### jenkins_credentials
 **NOTE** The use of the Jenkins credentials resource requries the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536. On older Jenkins installations, you will need to install the credentials plugin at version 1.5 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
 
+Each credential can be referenced in job by its UUID.
+You can set this UUID when creating credential, and set the same UUID in job configuration.
+To generate UUID, you can use linux command `uuidgen`.
+
+
 This resource manages Jenkins credentials, supporting the following actions:
 
     :create, :delete
@@ -115,12 +122,14 @@ The `:create` action idempotently creates a set of Jenkins credentials on the cu
 ```ruby
 # Create password credentials
 jenkins_password_credentials 'wcoyote' do
+  id 'f2361e6b-b8e0-4b2b-890b-82e85bc1a59f'
   description 'Wile E Coyote'
   password    'beepbeep'
 end
 
 # Create private key credentials
 jenkins_private_key_credentials 'wcoyote' do
+  id 'fa3aab48-4edc-446d-b1e2-1d89d86f4458'
   description 'Wile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
 end
@@ -133,7 +142,7 @@ jenkins_private_key_credentials 'wcoyote' do
 end
 ```
 
-The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of it's children to perform the deletion.
+The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of its children to perform the deletion.
 
 ```ruby
 jenkins_credentials 'wcoyote' do
@@ -159,7 +168,7 @@ This resource manages Jenkins jobs, supporting the following actions:
 
 The resource is fully idempotent and convergent. It also supports whyrun mode.
 
-The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates it's own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in Chef's file cache path:
+The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates its own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in Chef's file cache path:
 
 ```ruby
 xml = File.join(Chef::Config[:file_cache_path], 'bacon-config.xml')
@@ -203,9 +212,12 @@ This resource manages Jenkins plugins, supporting the following actions:
 
     :install, :uninstall, :enable, :disable
 
-This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. **This LWRP does not install plugin dependencies - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. Some plugins may require you restart the Jenkins instance for their changed to take affect.
 
-The `:install` action idempotely installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
+- **A plugin's dependencies are also installed by default, this behavior can be disabled by setting the `install_deps` attribute to `false`.**
+- **This resource does not install plugin dependencies from a a given hpi/jpi URL - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+
+The `:install` action idempotently installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
 ```ruby
 # Install the latest version of the greenballs plugin
@@ -219,6 +231,36 @@ end
 # Install a plugin from a given hpi (or jpi)
 jenkins_plugin 'greenballs' do
   source 'http://updates.jenkins-ci.org/download/plugins/greenballs/1.10/greenballs.hpi'
+end
+
+# Don't install a plugins dependencies
+jenkins_plugin 'github-oauth' do
+  install_deps false
+end
+```
+
+Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
+
+Package installation method:
+```ruby
+jenkins_plugin 'a_complicated_plugin' do
+  notifies :restart, 'service[jenkins]', :immediately
+end
+```
+
+War installation method:
+```ruby
+jenkins_plugin 'a_complicated_plugin' do
+  notifies :restart, 'runit_service[jenkins]', :immediately
+end
+```
+
+
+For advanced users, this resource exposes an `options` attribute that will be passed to the installation command. For more information on the possible values of these options, pleaes consult the documentation for your Jenkins installation.
+
+```ruby
+jenkins_plugin 'a_really_complicated_plugin' do
+  options '-deploy -cold'
 end
 ```
 
@@ -260,10 +302,10 @@ The following slave launch methods are supported:
 
 The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
 
-* `jenkins_jnlp_slave`
-* `jenkins_ssh_slave`
+* `jenkins_jnlp_slave` - As JNLP Slave connections are slave initiated, this resource should be part of a __slave__'s run list.
+* `jenkins_ssh_slave` - As SSH Slave connections are master initiated, this resource should be part of a __master__'s run list.
 
-The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
+The `:create` action idempotently creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
 
 ```ruby
 # Create a basic JNLP slave
@@ -280,8 +322,9 @@ jenkins_ssh_slave 'executor' do
   labels      ['executor', 'freebsd', 'jail']
 
   # SSH specific attributes
-  host     'localhost'
-  username 'jenkins'
+  host        '172.11.12.53' # or 'slave.example.org'
+  user        'jenkins'
+  credentials 'wcoyote'
 end
 
 # A slave's executors, usage mode and availability can also be configured
@@ -327,7 +370,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of its children to perform the connection.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -339,7 +382,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of its children to perform the connection.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -351,7 +394,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of it's children to bring the slave online.
+The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of its children to bring the slave online.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -363,7 +406,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of it's children to take a slave offline.
+The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of its children to take a slave offline.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -414,32 +457,35 @@ end
 Caveats
 -------
 ### Authentication
-If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special node attribute:
+If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special value in the `run_context`:
 
 ```ruby
-node['jenkins']['executor']['private_key']
+node.run_state[:jenkins_private_key]
 ```
 
-The underlying executor class (which all LWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this attribute is set. The method used to generate and populate this key-pair is left to the user:
+The underlying executor class (which all HWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this value is set. The method used to generate and populate this key-pair is left to the user:
 
 ```ruby
 # Using search
 master = search(:node, 'fqdn:master.ci.example.com').first
-node.set['jenkins']['executor']['private_key'] = master['jenkins']['private_key']
+node.run_state[:jenkins_private_key] = master['jenkins']['private_key']
 
 # Using encrypted data bags and chef-sugar
 private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
-node.set['jenkins']['executor']['private_key'] = private_key
+node.run_state[:jenkins_private_key] = private_key
 ```
 
-The associated public key must be set on a Jenkins user. You can use the `jenkins_user` resource to create this pairing. Here's an example that uses OpenSSL to create a keypair and assigns it appropiately:
-
+The associated public key must be set on a Jenkins user. You can use the `jenkins_user` resource to create this pairing. Here's an example that loads a keypair and assigns it appropiately:
 
 ```ruby
+jenkins_keys = encrypted_data_bag_item('jenkins', 'keys')
+
+require 'openssl'
 require 'net/ssh'
-key = OpenSSL::PKey::RSA.new(4096)
+
+key = OpenSSL::PKey::RSA.new(jenkins_keys['private_key'])
 private_key = key.to_pem
-public_key  = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
+public_key = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
 
 # Create the Jenkins user with the public key
 jenkins_user 'chef' do
@@ -447,11 +493,10 @@ jenkins_user 'chef' do
 end
 
 # Set the private key on the Jenkins executor
-ruby_block 'set private key' do
-  block { node.set['jenkins']['executor']['private_key'] = private_key }
-end
+node.run_state[:jenkins_private_key] = private_key
 ```
 
+Please note that older versions of Jenkins (< 1.555) permitted login via CLI for a user defined in Jenkins configuration with an SSH public key but not present in the actual SecurityRealm, and this is no longer permitted. If an operation requires any special permission at all, you must authenticate as a real user. This means that if you have LDAP or GitHub OAuth based authn/authz enabled the user you are using for configuraiton tasks must have an associated account in the external services. Please see [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) for more details.
 
 ### Proxies
 If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
@@ -460,7 +505,7 @@ If you need to pass through a proxy to communicate between your masters and slav
 node['jenkins']['executor']['proxy']
 ```
 
-The underlying executor class (which all LWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
+The underlying executor class (which all HWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
 
 ```ruby
 node.set['jenkins']['executor']['proxy'] = '1.2.3.4:5678'

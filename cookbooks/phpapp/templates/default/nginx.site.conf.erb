@@ -1,21 +1,21 @@
-<% if @server_domain != '' -%>
+<% if @conf_inc != '' -%>
+include <%= @conf_inc %>;
+<% end -%>
+<% if @flag_www_redirect -%>
 server {
-  server_name www.<%= @server_domain %>;
-  rewrite ^(.*) http://<%= @server_domain %>$1 permanent;
+  server_name www.<%= @domain %>;
+  rewrite ^(.*) http://<%= @domain %>$1 permanent;
 }
 <% end -%>
 server {
   <% if @server_port != '' -%>
-  listen   <%= @server_port %>;
+  listen <%= @server_port %>;
   <% end -%>
 
-  <% if @server_domain != '' -%>
-  server_name <%= @server_domain %>;
-  access_log  <%= @logdir %>/<%= @server_domain %>.access.log;
-  <% else -%>
-  server_name <%= @server_name %>;
-  access_log  <%= @logdir %>/<%= @server_name %>.access.log;
+  <% if @domain != '' -%>
+  server_name <%= @domain %>;
   <% end -%>
+  access_log  <%= @logdir %>/<%= @server_name %>.access.log;
 
   <% if @ssl == 'on' -%>
   ssl on

@@ -26,7 +26,9 @@ Requirements
 Attributes
 ==========
 
+* `node['phpcpd']['install_method']` - Installation method, "composer" or "phar", defaults to "composer"
 * `node['phpcpd']['version']` - The phpcpd version that will be installed, defaults to "latest"
+* `node['phpcpd']['prefix']` - The composer.json bin-dir, defaults to "/usr/bin" (composer install method only)
 
 Usage
 =====
@@ -47,7 +49,7 @@ License and Authors
 
 Author: David Joos <david@escapestudios.com>
 Author: Escape Studios Development <dev@escapestudios.com>
-Copyright: 2013, Escape Studios
+Copyright: 2013-2014, Escape Studios
 
 Unless otherwise noted, all files are released under the MIT license,
 possible exceptions will contain licensing information in them.

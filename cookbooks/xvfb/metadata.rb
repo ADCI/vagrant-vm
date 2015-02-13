@@ -1,9 +1,16 @@
-name             "xvfb"
-maintainer       "Maciej Pasternacki"
-maintainer_email "maciej@pasternacki.net"
-license          "apachev2"
-description      "Installs/Configures xvfb"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "0.0.1"
+name 'xvfb'
+maintainer 'Dennis Hoer'
+maintainer_email 'dennis.hoer@gmail.com'
+license 'MIT'
+description 'Installs/Configures Xvfb as a Service'
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version '1.0.0'
 
-supports "debian"
+supports 'debian'
+supports 'centos'
+supports 'fedora'
+supports 'redhat'
+supports 'ubuntu'
+
+suggests 'apt'
+suggests 'yum'
