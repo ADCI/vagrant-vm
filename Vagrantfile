@@ -63,7 +63,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #chef.add_recipe "imagemagick"
     #chef.add_recipe "poppler"
     #chef.add_recipe "pdftk"
-        
+
+    # Nodejs related cookbooks.
+    #chef.add_recipe "nodejs"
+    # Gulp requires nodejs cookbook.
+    #chef.add_recipe "gulp"
+
     # Configure available sites.
     # Available fields are:
     #  - port - Tells nginx to listen on this port.

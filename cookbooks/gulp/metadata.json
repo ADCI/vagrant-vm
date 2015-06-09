@@ -1,0 +1,30 @@
+{
+  "name": "gulp",
+  "description": "Installs gulp",
+  "long_description": "",
+  "maintainer": "Leonid Mamaev (ADCI)",
+  "maintainer_email": "leonid.mamaev@gmail.com",
+  "license": "",
+  "platforms": {
+  },
+  "dependencies": {
+    "npm": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.0.1"
+}
