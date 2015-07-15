@@ -125,5 +125,9 @@ default_attributes(
       "SMTP" => "localhost.localdomain",
       "sendmail_from" => "vagrant@localhost.localdomain"
     }
+  },
+
+  "nodejs" => {
+    "install_method" => "binary",
   }
 )
