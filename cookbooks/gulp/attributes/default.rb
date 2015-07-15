@@ -1,0 +1,1 @@
+default['gulp']['user'] = 'vagrant'
