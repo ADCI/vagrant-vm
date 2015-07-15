@@ -34,7 +34,8 @@ default_attributes(
       "username" => "root",
       "root_password" => "root",
       "debian_password" => "root",
-      "debian_username" => "root"
+      "debian_username" => "root",
+      "innodb_log_file_size" => "64M"
     },
     "apt_keyserver" => "keyserver.ubuntu.com"
   },
