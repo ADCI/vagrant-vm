@@ -58,7 +58,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     site_port = ''
     domain = ''
     flag_www_redirect = false
-    html_index = false
+    index = 'index.php'
     cors_headers = false
     ssl = ''
     ssl_certificate = ''
@@ -75,6 +75,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
           flag_www_redirect = config[1] == true || config[1] == 1 || config[1] == '1' || config[1] == 'true'
         when 'dir'
           docroot = "#{node[:doc_root]}#{config[1]}/project"
+        when 'root'
+          docroot = config[1]
         when 'ssl'
           ssl = config[1].downcase
         when 'ssl_certificate'
@@ -83,8 +85,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
           ssl_certificate_key = config[1]
         when 'conf_inc'
           conf_inc = config[1]
-        when 'html_index'
-          html_index = config[1]
+        when 'index'
+          index = config[1]
         when 'cors_headers'
           cors_headers = config[1]
       end
@@ -107,7 +109,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :server_port => site_port,
                 :domain => domain,
                 :flag_www_redirect => flag_www_redirect,
-                :html_index => html_index,
+                :index => index,
                 :cors_headers => cors_headers,
                 :ssl => ssl,
                 :ssl_certificate => ssl_certificate,
