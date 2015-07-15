@@ -58,6 +58,12 @@ server {
   location ~* ^.+.(jpg|jpeg|gif|css|png|js|ico|xml)$ {
     access_log        off;
     expires           30d;
+    <% if @cors_headers -%>
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Credentials' 'true';
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,Us$
+    <% end -%>
   }
 
 ## Disable viewing .htaccess & .htpassword

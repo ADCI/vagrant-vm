@@ -59,6 +59,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     domain = ''
     flag_www_redirect = false
     html_index = false
+    cors_headers = false
     ssl = ''
     ssl_certificate = ''
     ssl_certificate_key = ''
@@ -84,6 +85,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
           conf_inc = config[1]
         when 'html_index'
           html_index = config[1]
+        when 'cors_headers'
+          cors_headers = config[1]
       end
     end
     if site_port == '' && domain == ''
@@ -105,6 +108,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :domain => domain,
                 :flag_www_redirect => flag_www_redirect,
                 :html_index => html_index,
+                :cors_headers => cors_headers,
                 :ssl => ssl,
                 :ssl_certificate => ssl_certificate,
                 :ssl_certificate_key => ssl_certificate_key,
