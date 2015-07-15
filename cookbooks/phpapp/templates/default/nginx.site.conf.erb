@@ -28,7 +28,12 @@ server {
   <% end -%>
 
   root <%= @docroot %>;
+
+  <% if @html_index -%>
+  index index.php index.html;
+  <% else -%>
   index index.php;
+  <% end -%>
 
   if (!-e $request_filename) {
     rewrite  ^/(.*)$  /index.php?q=$1  last;

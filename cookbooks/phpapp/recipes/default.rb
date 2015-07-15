@@ -58,6 +58,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     site_port = ''
     domain = ''
     flag_www_redirect = false
+    html_index = false
     ssl = ''
     ssl_certificate = ''
     ssl_certificate_key = ''
@@ -81,6 +82,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
           ssl_certificate_key = config[1]
         when 'conf_inc'
           conf_inc = config[1]
+        when 'html_index'
+          html_index = config[1]
       end
     end
     if site_port == '' && domain == ''
@@ -101,6 +104,7 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :server_port => site_port,
                 :domain => domain,
                 :flag_www_redirect => flag_www_redirect,
+                :html_index => html_index,
                 :ssl => ssl,
                 :ssl_certificate => ssl_certificate,
                 :ssl_certificate_key => ssl_certificate_key,
