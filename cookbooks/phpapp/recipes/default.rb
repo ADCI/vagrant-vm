@@ -65,30 +65,75 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     ssl_certificate_key = ''
     conf_inc = ''
     docroot = "#{node[:doc_root]}/var/www/#{site_name}/project"
+    redirect = false
+    # Means "copy scheme".
+    redirect_scheme = '$scheme'
+    # 80 is default port. It'll be changed either to "listen" from "redirect" param or to "site_port" of available.
+    redirect_listen = '80'
+    redirect_from = ''
+    redirect_to = ''
+    redirect_ssl = ''
+    www_action = ''
+    api = false
+    api_path = ''
+    api_alias = ''
+
     site_config.each do |config|
       case config[0]
         when 'port'
           site_port = config[1]
+
         when 'domain'
           domain = config[1]
-        when 'flag_www_redirect'
-          flag_www_redirect = config[1] == true || config[1] == 1 || config[1] == '1' || config[1] == 'true'
+
+        when 'redirect'
+          redirect = true
+          if config[1].has_key?('www')
+            www_action = config[1][:www]
+          end
+          if config[1].has_key?('scheme')
+            redirect_scheme = config[1][:scheme]
+          end
+          if config[1].has_key?('listen')
+            redirect_listen = config[1][:listen]
+          end
+          if config[1].has_key?('ssl')
+            redirect_ssl = config[1][:ssl]
+          end
+
+        when 'api'
+          api = true
+          if config[1].has_key?('path')
+            api_path = config[1][:path]
+          end
+          if config[1].has_key?('alias')
+            api_alias = config[1][:alias]
+          end
+
         when 'dir'
           docroot = "#{node[:doc_root]}#{config[1]}/project"
+
         when 'root'
           docroot = config[1]
+
         when 'ssl'
           ssl = config[1].downcase
+
         when 'ssl_certificate'
           ssl_certificate = config[1]
+
         when 'ssl_certificate_key'
           ssl_certificate_key = config[1]
+
         when 'conf_inc'
           conf_inc = config[1]
+
         when 'index'
           index = config[1]
+
         when 'cors_headers'
           cors_headers = config[1]
+
       end
     end
     if site_port == '' && domain == ''
@@ -97,6 +142,24 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     end
     if domain == ''
       domain = site_name;
+    end
+
+    if redirect
+      domain_without_www = domain.sub(/www./, '')
+      domain_with_www = "www.#{domain_without_www}"
+      if www_action == 'enforce'
+        redirect_from = domain_without_www
+        redirect_to = domain_with_www
+      elsif www_action == 'remove'
+        redirect_from = domain_with_www
+        redirect_to = domain_without_www
+      else
+        redirect_from = domain
+        redirect_to = domain
+      end
+      if redirect_listen == '' && site_port != ''
+        redirect_listen = site_port
+      end
     end
 
     template "/etc/nginx/sites-available/#{site_name}.conf" do
@@ -117,8 +180,17 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :conf_inc => conf_inc,
                 #:server_aliases => ["*.#{site_name}"],
                 :docroot => docroot,
-                :logdir => "#{node[:nginx][:log_dir]}"
-                )
+                :logdir => "#{node[:nginx][:log_dir]}",
+                :redirect => redirect,
+                :redirect_scheme => redirect_scheme,
+                :redirect_listen => redirect_listen,
+                :redirect_ssl => redirect_ssl,
+                :redirect_from => redirect_from,
+                :redirect_to => redirect_to,
+                :api => api,
+                :api_path => api_path,
+                :api_alias => api_alias
+      )
     end
 
     nginx_site "#{site_name}.conf" do

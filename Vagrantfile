@@ -82,6 +82,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #  - conf_inc - Additional conf file which will be included in site's conf.
     #               Path to file should either be relative to nginx conf dir or
     #               absolute.
+    # - redirect - create redirect rule, can contain next fields:
+    #          www: "enforce", "remove" or nothing
+    #          scheme: any supported scheme (like "https" or "http") or nothing
+    #          listen: default nginx listen field (can accept something like "80 443")
+    #          ssl: "on" - ssl is enabled and ssl_certificate and ssl_certificate_key will be added to redirect rule too
+
     chef.json = {
       "project" => {
         "sites" => {
