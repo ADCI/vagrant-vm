@@ -44,6 +44,23 @@ server {
 
   index <%= @index %>;
 
+<% if @api -%>
+  location <%= @api_path %> {
+    alias <%= @api_alias %>;
+    if (!-e $request_filename) {
+      rewrite  ^<%= @api_path %>(.*)$  <%= @api_path %>index.php?q=$1  last;
+      break;
+    }
+    location ~ .php {
+      <% if @ssl == 'on' -%>
+      fastcgi_param HTTPS on;
+      <% end -%>
+      fastcgi_pass 127.0.0.1:9000;
+      include fastcgi.conf;
+      fastcgi_param SCRIPT_FILENAME $request_filename;
+    }
+  }
+<% else -%>
   if (!-e $request_filename) {
     rewrite  ^/(.*)$  /index.php?q=$1  last;
     break;
@@ -63,21 +80,6 @@ server {
     fastcgi_pass 127.0.0.1:9000;
   }
 
-<% if @api -%>
-  location <%= @api_path %> {
-    alias <%= @api_alias %>;
-    if (!-e $request_filename) {
-      rewrite  ^<%= @api_path %>(.*)$  <%= @api_path %>index.php?q=$1  last;
-      break;
-    }
-    location ~ .php {
-      fastcgi_param HTTPS on;
-      fastcgi_pass 127.0.0.1:9000;
-      include fastcgi.conf;
-      fastcgi_param SCRIPT_FILENAME $request_filename;
-    }
-  }
-<% else -%>
 ## Images and static content is treated different
   location ~* ^.+.(jpg|jpeg|gif|css|png|js|ico|xml|pdf)$ {
     access_log        off;
