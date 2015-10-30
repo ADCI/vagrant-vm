@@ -3,7 +3,8 @@ include <%= @conf_inc %>;
 <% end -%>
 <% if @redirect -%>
 server {
-  listen <%= @redirect_listen %>;
+  listen <%= @redirect_listen_from %>;
+  listen <%= @redirect_listen_to %>;
   server_name <%= @redirect_from %>;
   <% if @redirect_ssl == 'on' -%>
   <% if @ssl == 'on' -%>
@@ -18,6 +19,15 @@ server {
   <% end -%>
   rewrite ^(.*) <%= @redirect_scheme %>://<%= @redirect_to %>$1 permanent;
 }
+
+<% if @redirect_scheme == 'https' && @redirect_to != @redirect_from -%>
+server {
+  listen <%= @redirect_listen_from %>;
+  server_name <%= @redirect_to %>;
+  rewrite ^(.*) <%= @redirect_scheme %>://<%= @redirect_to %>$1 permanent;
+}
+<% end -%>
+
 <% end -%>
 
 server {

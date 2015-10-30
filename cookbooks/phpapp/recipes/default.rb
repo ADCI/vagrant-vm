@@ -68,8 +68,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
     redirect = false
     # Means "copy scheme".
     redirect_scheme = '$scheme'
-    # 80 is default port. It'll be changed either to "listen" from "redirect" param or to "site_port" of available.
-    redirect_listen = '80'
+    redirect_listen_to = ''
+    redirect_listen_from = ''
     redirect_from = ''
     redirect_to = ''
     redirect_ssl = ''
@@ -96,6 +96,12 @@ if node.has_key?("project") && node["project"].has_key?("sites")
           end
           if config[1].has_key?('listen')
             redirect_listen = config[1][:listen]
+          end
+          if config[1].has_key?('listen_to')
+            redirect_listen_to = config[1][:listen_to]
+          end
+          if config[1].has_key?('listen_from')
+            redirect_listen_from = config[1][:listen_from]
           end
           if config[1].has_key?('ssl')
             redirect_ssl = config[1][:ssl]
@@ -157,8 +163,12 @@ if node.has_key?("project") && node["project"].has_key?("sites")
         redirect_from = domain
         redirect_to = domain
       end
-      if redirect_listen == '' && site_port != ''
-        redirect_listen = site_port
+      if redirect_listen_to == ''
+        if site_port == ''
+          redirect_listen_to = '443';
+        else
+          redirect_listen_to = site_port
+        end
       end
     end
 
@@ -183,7 +193,8 @@ if node.has_key?("project") && node["project"].has_key?("sites")
                 :logdir => "#{node[:nginx][:log_dir]}",
                 :redirect => redirect,
                 :redirect_scheme => redirect_scheme,
-                :redirect_listen => redirect_listen,
+                :redirect_listen_to => redirect_listen_to,
+                :redirect_listen_from => redirect_listen_from,
                 :redirect_ssl => redirect_ssl,
                 :redirect_from => redirect_from,
                 :redirect_to => redirect_to,
